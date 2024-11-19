@@ -1,0 +1,35 @@
+SELECT
+  produto.status,
+  produto.codigo,
+  produto.descricao,
+  embalagem.etiqueta,
+  embalagem.codigobarras,
+  revisaofiscalproduto.revisado,
+  cast('Produto sem código de barras' as text) AS inconsistencia
+FROM
+   produto
+   JOIN embalagem ON produto.id = embalagem.produtoid
+   LEFT JOIN revisaofiscalproduto ON revisaofiscalproduto.produtoid = produto.id
+WHERE
+   revisado is null and
+   produto.status = 'A' and
+    not exists (select 0 from embalagem
+        WHERE produto.id = embalagem.produtoid and embalagem.codigobarras is not null )
+
+UNION
+SELECT
+  produto.status,
+  produto.codigo,
+  produto.descricao,
+  embalagem.etiqueta,
+  embalagem.codigobarras,
+  revisaofiscalproduto.revisado,
+  cast('Código barras com menos de 13 digitos' as text) as inconsistencia
+FROM
+   produto
+   JOIN embalagem on produto.id = embalagem.produtoid
+   LEFT JOIN revisaofiscalproduto on revisaofiscalproduto.produtoid = produto.id
+
+WHERE
+revisado is null and
+produto.status = 'A' and length(embalagem.codigobarras )<13
