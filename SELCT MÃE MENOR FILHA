@@ -1,0 +1,31 @@
+SELECT
+  embalagem_mae.etiqueta as mae_etiqueta,
+  embalagem_filha.codigobarras as mae_codigobarras,
+  embalagem_mae.descricao,
+  embalagem_filha.id AS filha_id,
+  embalagem_mae.quantidadeembalagem AS quantidade_mae,
+  embalagem_mae.precovenda AS preco_mae,
+  embalagem_filha.precovenda AS preco_filha,
+  embalagem_filha.precovenda * embalagem_mae.quantidadeembalagem AS precofinal_filha
+FROM
+  embalagem embalagem_mae
+  JOIN embalagem embalagem_filha
+    ON embalagem_filha.id = embalagem_mae.embalagemcontidaid
+  JOIN agendamentoalteracaopreco
+    ON agendamentoalteracaopreco.embalagemid = embalagem_filha.id
+WHERE
+  embalagem_mae.precovenda < embalagem_filha.precovenda * embalagem_mae.quantidadeembalagem;
+select
+filha.etiqueta as etiqueta_filha,
+filha.codigobarras as codigobarras_filha,
+filha.descricao as descricao_filha,
+filha.precovenda as precovenda_filha,
+mae.etiqueta as etiqueta_mae,
+mae.descricao as descricao_mae,
+mae.precovenda as precovenda_mae
+from
+embalagem filha
+join embalagem mae
+on mae.embalagemcontidaid = filha.id
+where
+mae.precovenda <= filha.precovenda;
