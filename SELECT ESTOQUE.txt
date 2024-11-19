@@ -1,0 +1,9 @@
+SELECT
+    embalagem.codigobarras as codigo_de_barras,
+    produto.descricao as descrição,
+    round(estoque, 0)
+FROM estoque
+JOIN embalagem on embalagemid = embalagem.id
+JOIN produto on produtoid = produto.id
+WHERE estoque = 1
+ORDER BY produto.descricao
